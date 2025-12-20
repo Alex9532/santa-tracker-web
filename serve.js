@@ -35,7 +35,7 @@ const yargs = require('yargs')
     .option('port', {
       alias: 'p',
       type: 'number',
-      default: process.env.PORT || 80,
+      default: process.env.PORT || 8000,
       describe: 'Static port',
     })
     .option('all', {
@@ -118,7 +118,7 @@ async function serve() {
   const staticServer = polka();
   staticServer.use(yargs.prefix, vfsMiddleware(vfs, 'static'), staticHost);
 
-  await listen(staticServer, yargs.port + 80, yargs.all);
+  await listen(staticServer, yargs.port, yargs.all);
   log('Static', chalk.green(config.staticScope), yargs.all ? chalk.red('(on all interfaces)') : '');
 
   const prodServer = polka();
@@ -164,8 +164,8 @@ async function serve() {
   );
 
   // Listen, copy and announce prod URL.
-  await listen(prodServer, yargs.port + 00);
-  const prodURL = `http://localhost:${yargs.port + 00}`;
+  await listen(prodServer, yargs.port);
+  const prodURL = `http://localhost:${yargs.port}`;
   const clipboardError = clipboardCopy(prodURL);
   const suffix = clipboardError ? chalk.red('(could not copy to clipboard)') : chalk.dim('(on your clipboard!)');
   log('Prod', chalk.greenBright(prodURL), suffix);
